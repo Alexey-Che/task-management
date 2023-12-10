@@ -1,6 +1,5 @@
 package com.taskmanagement.config.jwt;
 
-import com.taskmanagement.config.CustomUserDetails;
 import com.taskmanagement.config.CustomUserDetailsService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

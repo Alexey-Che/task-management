@@ -27,6 +27,6 @@ create table if not exists tasks
 );
 
 insert into users(login, password, role)
-VALUES ('test_user1', 'user1_password', 'ROLE_USER'),
-       ('test_admin', 'admin_password', 'ROLE_ADMIN');
+VALUES ('test_user1', '$2a$10$xwf/u8NOJvOgYJEZ68aM6OB3j/fIR7N/YLZAbHckYkfIKJ4Es2eVa', 'ROLE_USER'),
+       ('test_admin', '$2a$10$TvcHqk1iquYJ01Lmjpc73eSbt.6YlmdKwRVAfUyKgMwM.jt5NSfoO', 'ROLE_ADMIN');
 

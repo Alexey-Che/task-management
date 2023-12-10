@@ -8,6 +8,7 @@ import com.taskmanagement.entity.User;
 import com.taskmanagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,19 +23,25 @@ public class AuthController {
 
     @PostMapping("/register")   //регистрация нового пользователя
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegistrationRequestDto registrationRequest) {
-        var user = new User();
-        user.setPassword(registrationRequest.getPassword());
-        user.setLogin(registrationRequest.getLogin());
-        if (userService.findByLogin(registrationRequest.getLogin()) == null) {
-            userService.saveUser(user);
+        var newUser = User.builder()
+                .login(registrationRequest.getLogin())
+                .password(registrationRequest.getPassword())
+                .role(registrationRequest.getRole())
+                .build();
+        if (userService.findByLogin(registrationRequest.getLogin()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("user already exist");
         }
+        userService.saveUser(newUser);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/auth")  //получение jwt токена зарегистрированным пользователем
     public ResponseEntity<?> auth(@RequestBody @Valid AuthRequestDto request) {
-        val userEntity = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
-        val token = jwtProvider.createToken(userEntity.getLogin());
+        val user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        val token = jwtProvider.createToken(user.getLogin());
         return ResponseEntity.ok(new AuthResponseDto(token));
     }
 }

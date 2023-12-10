@@ -5,9 +5,12 @@ import com.taskmanagement.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,14 +26,14 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User findByLogin(String login) {
+    public Optional<User> findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
     public User findByLoginAndPassword(String login, String password) {
-        User userEntity = findByLogin(login);
-        if (userEntity != null && passwordEncoder.matches(password, userEntity.getPassword())) {
-            return userEntity;
+        val userEntity = findByLogin(login);
+        if (userEntity.isPresent() && passwordEncoder.matches(password, userEntity.get().getPassword())) {
+            return userEntity.get();
         }
         return null;
     }
