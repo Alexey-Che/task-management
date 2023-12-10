@@ -9,12 +9,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class RegistrationRequestDto {
 
-    @NotEmpty
+    @NotEmpty(message = "login must not be empty")
     private String login;
 
-    @NotEmpty
+    @NotEmpty(message = "password must not be empty")
     private String password;
 
-    @NotNull
+    @NotNull(message = "you must specify the role")
     private UserRole role;
 }
