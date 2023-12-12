@@ -7,7 +7,7 @@ create table if not exists users
         constraint uk_ow0gan20590jrb00upg3va2fn
         unique,
     password varchar(255),
-    role     varchar(255)
+    role     varchar(45)
  );
 
 create table comment
@@ -23,8 +23,10 @@ create table if not exists task
     id       serial not null
         constraint task_table_pk
             primary key,
+    title       varchar(255)  not null,
     description varchar(255),
-    title       varchar(255),
+    status      varchar(45),
+    priority    varchar(45),
     author_id   bigint
         constraint fknu4tbtolc8avjgstax6sk0woe
             references users,

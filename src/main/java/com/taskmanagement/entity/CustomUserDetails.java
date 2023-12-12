@@ -1,6 +1,5 @@
-package com.taskmanagement.config;
+package com.taskmanagement.entity;
 
-import com.taskmanagement.entity.User;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;

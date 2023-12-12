@@ -7,8 +7,9 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class AuthRequestDto {
 
-    @NotEmpty
+    @NotEmpty(message = "login must not be empty")
     private String login;
-    @NotEmpty
+
+    @NotEmpty(message = "password must not be empty")
     private String password;
 }

@@ -15,6 +15,6 @@ public class RegistrationRequestDto {
     @NotEmpty(message = "password must not be empty")
     private String password;
 
-    @NotNull(message = "you must specify the role")
+    @NotNull(message = "user's role must not be empty")
     private UserRole role;
 }

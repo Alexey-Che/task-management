@@ -1,4 +1,4 @@
-package com.taskmanagement.config.jwt;
+package com.taskmanagement.entity.jwt;
 
 import com.taskmanagement.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;

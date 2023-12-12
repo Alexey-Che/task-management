@@ -1,9 +1,7 @@
 package com.taskmanagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,15 +12,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Table(name = "comment")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "text")
-    private String text;
+    String text;
 
     @OneToMany(mappedBy = "comment")
-    private List<Task> tasks;
+    List<Task> tasks;
 }

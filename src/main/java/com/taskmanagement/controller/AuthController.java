@@ -1,10 +1,10 @@
 package com.taskmanagement.controller;
 
-import com.taskmanagement.config.jwt.JwtProvider;
 import com.taskmanagement.dto.request.AuthRequestDto;
 import com.taskmanagement.dto.request.RegistrationRequestDto;
 import com.taskmanagement.dto.response.AuthResponseDto;
 import com.taskmanagement.entity.User;
+import com.taskmanagement.entity.jwt.JwtProvider;
 import com.taskmanagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("v1")
 public class AuthController {
 
     private final UserService userService;
@@ -49,15 +49,14 @@ public class AuthController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
         val result = ex.getBindingResult();
-        Map<String, String> errors = new HashMap<>();
+        var errors = new HashMap<String, String>();
 
         for (val fieldError : result.getFieldErrors()) {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        return errors;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
