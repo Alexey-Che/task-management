@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "task")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,11 +19,15 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "title")
     String title;
 
+    @Column(name = "description")
     String description;
 
-    String comment;
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    Comment comment;
 
     @ManyToOne
     @JoinColumn(name = "author_id")

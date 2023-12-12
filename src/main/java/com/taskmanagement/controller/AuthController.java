@@ -10,14 +10,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
 public class AuthController {
 
     private final UserService userService;
@@ -47,8 +48,16 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponseDto(token));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<?> handleException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        val result = ex.getBindingResult();
+        Map<String, String> errors = new HashMap<>();
+
+        for (val fieldError : result.getFieldErrors()) {
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+
+        return errors;
     }
 }

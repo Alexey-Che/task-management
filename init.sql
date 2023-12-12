@@ -8,21 +8,31 @@ create table if not exists users
         unique,
     password varchar(255),
     role     varchar(255)
-                 );
+ );
 
-create table if not exists tasks
+create table comment
 (
     id       serial not null
-        constraint tasks_table_pk
+        constraint comment_table_pk
             primary key,
-    comment     varchar(255),
+    text varchar(255)
+);
+
+create table if not exists task
+(
+    id       serial not null
+        constraint task_table_pk
+            primary key,
     description varchar(255),
     title       varchar(255),
     author_id   bigint
-        constraint fkhods8r8oyyx7tuj3c91ki2sk1
+        constraint fknu4tbtolc8avjgstax6sk0woe
             references users,
+    comment_id  bigint
+        constraint fk80bu2ev6i4lwcb7p5v5l673ij
+            references comment,
     executor_id bigint
-        constraint fkbrg922bkqn5m7212jsqjg6ioe
+        constraint fk60p5enwpfg7w3pnor96m0t931
             references users
 );
 
