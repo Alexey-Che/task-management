@@ -1,11 +1,15 @@
 package com.taskmanagement.service;
 
 import com.taskmanagement.entity.User;
+import com.taskmanagement.exception.UserNotFoundException;
 import com.taskmanagement.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +40,26 @@ public class UserService {
             return userEntity.get();
         }
         return null;
+    }
+
+    public Long getCurrentUserId() {
+        SecurityContext ctx = SecurityContextHolder.getContext();
+        Authentication auth = ctx.getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            return userRepository.findUserIdByEmail(auth.getName()).orElseThrow(UserNotFoundException::new);
+        }
+
+        throw new UserNotFoundException();
+    }
+
+    public User getCurrentUser() {
+        SecurityContext ctx = SecurityContextHolder.getContext();
+        Authentication auth = ctx.getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            return userRepository.findByEmail(auth.getName()).orElseThrow(UserNotFoundException::new);
+        }
+
+        throw new UserNotFoundException();
     }
 
 

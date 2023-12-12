@@ -1,6 +1,7 @@
 package com.taskmanagement.controller;
 
 import com.taskmanagement.dto.TaskDto;
+import com.taskmanagement.entity.enums.TaskStatus;
 import com.taskmanagement.service.TaskService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,11 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTask(id));
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllUserTasks(@RequestParam("userId") Long userId) {
+        return ResponseEntity.ok(taskService.getAllUserTasks(userId));
+    }
+
     @PutMapping
     public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto) {
         return ResponseEntity.ok(taskService.createTask(taskDto));
@@ -34,6 +40,17 @@ public class TaskController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("{id}/executor")
+    public ResponseEntity<?> setTaskExecutor(@PathVariable("id") Long taskId, @RequestParam("userId") Long userId) {
+        return ResponseEntity.ok(taskService.setTaskExecutor(taskId, userId));
+    }
+
+    @PostMapping("{id}/status")
+    public ResponseEntity<?> setTaskStatus(@PathVariable("id") Long taskId, @RequestParam("status") TaskStatus status) {
+        taskService.changeTaskStatus(taskId, status);
         return ResponseEntity.ok().build();
     }
 

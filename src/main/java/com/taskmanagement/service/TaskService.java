@@ -11,8 +11,11 @@ import com.taskmanagement.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,28 +24,36 @@ public class TaskService {
 
     TaskRepository taskRepository;
     UserRepository userRepository;
+    UserService userService;
 
     public Task getTask(Long id) {
-        return taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        val currentUser = userService.getCurrentUser();
+        return taskRepository.findByIdAndAuthorOrExecutor(id, currentUser).orElseThrow(TaskNotFoundException::new);
+    }
+
+    public List<Task> getAllUserTasks(Long userId) {
+        val user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        return taskRepository.findByAuthorIdOrExecutorId(user);
     }
 
     @Transactional
     public void deleteTask(Long id) {
-        taskRepository.delete(getTask(id));
+        val currentUserId = userService.getCurrentUserId();
+        val task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        if (task.getAuthor().getId().equals(currentUserId) || task.getExecutor().getId().equals(currentUserId)) {
+            taskRepository.delete(task);
+        }
     }
 
     @Transactional
     public Task createTask(TaskDto task) {
+        val currentUser = userService.getCurrentUser();
         var newTask = Task.builder()
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .status(task.getStatus() == null ? TaskStatus.PENDING : task.getStatus())
-                .priority(task.getPriority() == null ? TaskPriority.MEDIUM : task.getPriority());
-
-        if (task.getAuthorId() != null) {
-            newTask.author(userRepository.findById(task.getAuthorId())
-                    .orElseThrow(() -> new UserNotFoundException("author not found")));
-        }
+                .priority(task.getPriority() == null ? TaskPriority.MEDIUM : task.getPriority())
+                .author(currentUser);
 
         if (task.getExecutorId() != null) {
             newTask.executor(userRepository.findById(task.getExecutorId())
@@ -50,6 +61,25 @@ public class TaskService {
         }
 
         return taskRepository.save(newTask.build());
+    }
+
+    @Transactional
+    public void changeTaskStatus(Long taskId, TaskStatus status) {
+        val currentUser = userService.getCurrentUser();
+        var task = taskRepository.findByIdAndAuthorOrExecutor(taskId, currentUser)
+                .orElseThrow(TaskNotFoundException::new);
+        task.setStatus(status);
+    }
+
+    @Transactional
+    public Task setTaskExecutor(Long taskId, Long executorUserId) {
+        val currentUser = userService.getCurrentUser();
+        var task = taskRepository.findByIdAndAuthor(taskId, currentUser).orElseThrow(TaskNotFoundException::new);
+        val executor = userRepository.findById(executorUserId).orElseThrow(UserNotFoundException::new);
+
+        task.setExecutor(executor);
+
+        return taskRepository.save(task);
     }
 
     @Transactional

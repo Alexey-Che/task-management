@@ -44,7 +44,7 @@ public class AuthController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        val token = jwtProvider.createToken(user.getEmail());
+        val token = jwtProvider.createTokenByEmail(user.getEmail());
         return ResponseEntity.ok(new AuthResponseDto(token));
     }
 

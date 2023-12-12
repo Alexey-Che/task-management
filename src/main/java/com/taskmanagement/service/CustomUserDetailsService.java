@@ -21,4 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         val user = userService.findByEmail(username);
         return user.map(CustomUserDetails::fromUserEntityToCustomUserDetails).orElse(null);
     }
+
+
 }
