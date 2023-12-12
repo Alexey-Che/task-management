@@ -9,8 +9,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class RegistrationRequestDto {
 
-    @NotEmpty(message = "login must not be empty")
-    private String login;
+    @NotEmpty(message = "email must not be empty")
+    private String email;
 
     @NotEmpty(message = "password must not be empty")
     private String password;

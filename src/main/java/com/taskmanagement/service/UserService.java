@@ -26,12 +26,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> findByLogin(String login) {
-        return userRepository.findByLogin(login);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    public User findByLoginAndPassword(String login, String password) {
-        val userEntity = findByLogin(login);
+    public User findByEmailAndPassword(String email, String password) {
+        val userEntity = findByEmail(email);
         if (userEntity.isPresent() && passwordEncoder.matches(password, userEntity.get().getPassword())) {
             return userEntity.get();
         }

@@ -27,11 +27,11 @@ public class AuthController {
     @PostMapping("/register")   //регистрация нового пользователя
     public ResponseEntity<?> registerUser(@RequestBody @Valid RegistrationRequestDto registrationRequest) {
         var newUser = User.builder()
-                .login(registrationRequest.getLogin())
+                .email(registrationRequest.getEmail())
                 .password(registrationRequest.getPassword())
                 .role(registrationRequest.getRole())
                 .build();
-        if (userService.findByLogin(registrationRequest.getLogin()).isPresent()) {
+        if (userService.findByEmail(registrationRequest.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("user already exist");
         }
         userService.saveUser(newUser);
@@ -40,11 +40,11 @@ public class AuthController {
 
     @PostMapping("/auth")  //получение jwt токена зарегистрированным пользователем
     public ResponseEntity<?> auth(@RequestBody @Valid AuthRequestDto request) {
-        val user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
+        val user = userService.findByEmailAndPassword(request.getEmail(), request.getPassword());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        val token = jwtProvider.createToken(user.getLogin());
+        val token = jwtProvider.createToken(user.getEmail());
         return ResponseEntity.ok(new AuthResponseDto(token));
     }
 

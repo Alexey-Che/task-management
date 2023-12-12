@@ -12,13 +12,13 @@ import java.util.Collections;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomUserDetails implements UserDetails {
 
-    String login;
+    String email;
     String password;
     Collection<? extends GrantedAuthority> authorities;
 
     public static CustomUserDetails fromUserEntityToCustomUserDetails(User user) {
         CustomUserDetails userDetails = new CustomUserDetails();
-        userDetails.login = user.getLogin();
+        userDetails.email = user.getEmail();
         userDetails.password = user.getPassword();
         userDetails.authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
         return userDetails;
@@ -36,7 +36,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
