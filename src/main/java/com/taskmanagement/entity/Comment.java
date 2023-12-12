@@ -24,4 +24,5 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment")
     List<Task> tasks;
+
 }
