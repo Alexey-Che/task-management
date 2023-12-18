@@ -1,5 +1,6 @@
 package com.taskmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -22,6 +23,7 @@ public class Comment {
     @Column(name = "text")
     String text;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "comment")
     List<Task> tasks;
 
