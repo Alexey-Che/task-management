@@ -23,8 +23,11 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUserTasks(@RequestParam("userId") Long userId) {
-        return ResponseEntity.ok(taskService.getAllUserTasks(userId));
+    public ResponseEntity<?> getAllUserTasks(@RequestParam("userId") Long userId,
+                                             @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                             @RequestParam(value = "limit", defaultValue = "3") Integer limit,
+                                             @RequestParam(value = "sort", defaultValue = "status") String sort) {
+        return ResponseEntity.ok(taskService.getAllUserTasks(userId, page, limit, sort));
     }
 
     @PutMapping

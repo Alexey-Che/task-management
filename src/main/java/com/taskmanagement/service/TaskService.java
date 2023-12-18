@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +33,9 @@ public class TaskService {
         return taskRepository.findByIdAndAuthorOrExecutor(id, currentUser).orElseThrow(TaskNotFoundException::new);
     }
 
-    public List<Task> getAllUserTasks(Long userId) {
+    public List<Task> getAllUserTasks(Long userId, int page, int limit, String sort) {
         val user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-        return taskRepository.findByAuthorIdOrExecutorId(user);
+        return taskRepository.findByAuthorIdOrExecutorId(user, PageRequest.of(page - 1, limit, Sort.by(sort)));
     }
 
     @Transactional
