@@ -38,7 +38,12 @@ create table if not exists task
             references users
 );
 
-insert into users(login, password, role)
-VALUES ('test_user1@mail.com', '$2a$10$xwf/u8NOJvOgYJEZ68aM6OB3j/fIR7N/YLZAbHckYkfIKJ4Es2eVa', 'ROLE_USER'),
+insert into users(email, password, role)
+values ('test_user1@mail.com', '$2a$10$xwf/u8NOJvOgYJEZ68aM6OB3j/fIR7N/YLZAbHckYkfIKJ4Es2eVa', 'ROLE_USER'),
        ('test_admin@mail.com', '$2a$10$TvcHqk1iquYJ01Lmjpc73eSbt.6YlmdKwRVAfUyKgMwM.jt5NSfoO', 'ROLE_ADMIN');
+
+insert into task(title, description, status, priority, author_id)
+values ('task_1', 'description_1', 'PENDING', 'LOW', 1),
+       ('task_2', 'description_2', 'IN_PROGRESS', 'MEDIUM', 1),
+       ('task_3', 'description_3', 'COMPLETE', 'HIGH', 1);
 

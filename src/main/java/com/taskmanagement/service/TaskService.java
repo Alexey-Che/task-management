@@ -30,7 +30,8 @@ public class TaskService {
 
     public Task getTask(Long id) {
         val currentUser = userService.getCurrentUser();
-        return taskRepository.findByIdAndAuthorOrExecutor(id, currentUser).orElseThrow(TaskNotFoundException::new);
+        return taskRepository.findByIdAndAuthorOrExecutor(id, currentUser)
+                .orElseThrow(() -> new TaskNotFoundException("tasks not found: " + id));
     }
 
     public List<Task> getAllUserTasks(Long userId, int page, int limit, String sort) {
@@ -41,7 +42,7 @@ public class TaskService {
     @Transactional
     public void deleteTask(Long id) {
         val currentUserId = userService.getCurrentUserId();
-        val task = taskRepository.findById(id).orElseThrow(TaskNotFoundException::new);
+        val task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("tasks not found: " + id));
         if (task.getAuthor().getId().equals(currentUserId) || task.getExecutor().getId().equals(currentUserId)) {
             taskRepository.delete(task);
         }
@@ -51,6 +52,7 @@ public class TaskService {
     public Task createTask(TaskDto task) {
         val currentUser = userService.getCurrentUser();
         var newTask = Task.builder()
+                .id(task.getId())
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .status(task.getStatus() == null ? TaskStatus.PENDING : task.getStatus())
@@ -69,14 +71,15 @@ public class TaskService {
     public void changeTaskStatus(Long taskId, TaskStatus status) {
         val currentUser = userService.getCurrentUser();
         var task = taskRepository.findByIdAndAuthorOrExecutor(taskId, currentUser)
-                .orElseThrow(TaskNotFoundException::new);
+                .orElseThrow(() -> new TaskNotFoundException("tasks not found: " + taskId));
         task.setStatus(status);
     }
 
     @Transactional
     public Task setTaskExecutor(Long taskId, Long executorUserId) {
         val currentUser = userService.getCurrentUser();
-        var task = taskRepository.findByIdAndAuthor(taskId, currentUser).orElseThrow(TaskNotFoundException::new);
+        var task = taskRepository.findByIdAndAuthor(taskId, currentUser)
+                .orElseThrow(() -> new TaskNotFoundException("tasks not found: " + taskId));
         val executor = userRepository.findById(executorUserId).orElseThrow(UserNotFoundException::new);
 
         task.setExecutor(executor);

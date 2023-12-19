@@ -24,7 +24,7 @@ public class CommentService {
         var tasks = taskRepository.findAllById(request.getTaskIds());
 
         if (tasks.isEmpty()) {
-            throw new TaskNotFoundException();
+            throw new TaskNotFoundException("tasks not found: " + request.getTaskIds());
         }
 
         var comment = commentRepository.save(Comment.builder()
