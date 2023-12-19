@@ -35,7 +35,7 @@ public class SpringFoxConfig {
     public static ApiInfo metadata() {
         return new ApiInfoBuilder()
                 .title("TaskManagementApplication")
-                .description("Your Description")
+                .description("Description")
                 .version(Optional.ofNullable(TaskManagementApplication.class.getPackage().getImplementationVersion())
                         .orElse("unknown"))
                 .build();
